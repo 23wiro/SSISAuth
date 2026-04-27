@@ -1,12 +1,12 @@
 package com.ssis.ssisauth.deps;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class deps {
 
     public static String generateCode() {
-        String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        SecureRandom random = new SecureRandom();
         StringBuilder code = new StringBuilder();
 
         for (int i = 0; i < 6; i++) {
