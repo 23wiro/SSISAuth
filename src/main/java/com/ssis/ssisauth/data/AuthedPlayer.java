@@ -6,12 +6,14 @@ public class AuthedPlayer {
     private String name;
     private String real_name;
     private String user_class;
+    private String code;
 
-    public AuthedPlayer(Player player, String real_name, String user_class ){
+    public AuthedPlayer(Player player, String real_name, String user_class, String code){
         this.uuid = player.getStringUUID();
         this.name = player.getName().getString();
         this.real_name = real_name;
         this.user_class = user_class;
+        this.code = code;
     }
 
     public String getUuid(){
@@ -29,4 +31,6 @@ public class AuthedPlayer {
     public String getUser_class(){
         return user_class;
     }
+
+    public String getCode() {return code;}
 }

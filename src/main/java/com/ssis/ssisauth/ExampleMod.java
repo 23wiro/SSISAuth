@@ -1,5 +1,7 @@
 package com.ssis.ssisauth;
 
+import com.ssis.ssisauth.data.AuthedPlayer;
+import com.ssis.ssisauth.data.PlayerPendingAuth;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 
@@ -35,6 +37,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import com.ssis.ssisauth.data.AuthedPlayerList;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import com.ssis.ssisauth.deps.deps;
+import com.ssis.ssisauth.net.post;
 
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -100,10 +103,18 @@ public class ExampleMod {
 
         if (AuthedPlayerList.playerAuthed(player)){
             //temp todo
+
+        } else if (PlayerPendingAuth.playerPending(player))  {
+            AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
+            player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
+
         } else {
             String code = deps.generateCode();
+
+            post.postAuthCode(player, code);
+
             player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + code));
-            // post player uuid and code  to mc.ssis.nu
+            PlayerPendingAuth.add(new AuthedPlayer(player, null, null, code));
         }
 
     }
