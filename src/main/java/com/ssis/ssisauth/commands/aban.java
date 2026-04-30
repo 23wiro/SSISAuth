@@ -6,16 +6,16 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import com.ssis.ssisauth.data.AuthedPlayerList;
 import com.ssis.ssisauth.data.AuthedPlayer;
 
 public class aban {
 
-
     private static final SuggestionProvider<CommandSourceStack> AUTHED_PLAYERS =
             (ctx, builder) -> SharedSuggestionProvider.suggest(
                     AuthedPlayerList.getAll().stream()
-                            .map(AuthedPlayer::getName)
+                            .map(AuthedPlayer::getReal_name)
                             .toList(),
                     builder
             );
@@ -28,14 +28,38 @@ public class aban {
                                 .suggests(AUTHED_PLAYERS)
                                 .then(Commands.argument("reason", StringArgumentType.greedyString())
                                         .executes(ctx -> {
-                                            String player = StringArgumentType.getString(ctx, "player");
+                                            String realName = StringArgumentType.getString(ctx, "player");
                                             String reason = StringArgumentType.getString(ctx, "reason");
-                                            return dispatcher.execute("ban " + player + " " + reason, ctx.getSource());
+
+                                            String minecraftName = AuthedPlayerList.getAll().stream()
+                                                    .filter(ap -> ap.getReal_name().equals(realName))
+                                                    .map(AuthedPlayer::getName)
+                                                    .findFirst()
+                                                    .orElse(null);
+
+                                            if (minecraftName == null) {
+                                                ctx.getSource().sendFailure(Component.literal("No authed player found with real name: " + realName));
+                                                return 0;
+                                            }
+
+                                            return dispatcher.execute("ban " + minecraftName + " " + reason, ctx.getSource());
                                         })
                                 )
                                 .executes(ctx -> {
-                                    String player = StringArgumentType.getString(ctx, "player");
-                                    return dispatcher.execute("ban " + player, ctx.getSource());
+                                    String realName = StringArgumentType.getString(ctx, "player");
+
+                                    String minecraftName = AuthedPlayerList.getAll().stream()
+                                            .filter(ap -> ap.getReal_name().equals(realName))
+                                            .map(AuthedPlayer::getName)
+                                            .findFirst()
+                                            .orElse(null);
+
+                                    if (minecraftName == null) {
+                                        ctx.getSource().sendFailure(Component.literal("No authed player found with real name: " + realName));
+                                        return 0;
+                                    }
+
+                                    return dispatcher.execute("ban " + minecraftName, ctx.getSource());
                                 })
                         )
         );

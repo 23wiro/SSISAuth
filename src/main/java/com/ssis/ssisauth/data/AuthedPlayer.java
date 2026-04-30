@@ -28,9 +28,13 @@ public class AuthedPlayer {
         return real_name;
     }
 
+    public Void setReal_name(String Real_name){this.real_name = Real_name; return null;}
+
     public String getUser_class(){
         return user_class;
     }
+
+    public Void setUser_class(String User_class){this.real_name = User_class; return null;}
 
     public String getCode() {return code;}
 }

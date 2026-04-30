@@ -102,9 +102,10 @@ public class ExampleMod {
         ServerPlayer player = (ServerPlayer) event.getEntity();
 
         if (AuthedPlayerList.playerAuthed(player)){
-            //temp todo
 
-        } else if (PlayerPendingAuth.playerPending(player))  {
+            player.refreshTabListName();
+
+            } else if (PlayerPendingAuth.playerPending(player))  {
             AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
             player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
 
@@ -150,6 +151,33 @@ public class ExampleMod {
     public void onServerStopping(ServerStoppingEvent event){
         AuthedPlayerList.save();
     }
+
+    // Chat + nametag above head
+    @SubscribeEvent
+    public void onGetName(PlayerEvent.NameFormat event) {
+        AuthedPlayerList.getAll().stream()
+                .filter(ap -> ap.getUuid().equals(event.getEntity().getStringUUID()))
+                .findFirst()
+                .ifPresent(ap -> {
+                    if (ap.getReal_name() != null) {
+                        event.setDisplayname(Component.literal(ap.getReal_name()));
+                    }
+                });
+    }
+
+    // Tab list
+    @SubscribeEvent
+    public void onTabListName(PlayerEvent.TabListNameFormat event) {
+        AuthedPlayerList.getAll().stream()
+                .filter(ap -> ap.getUuid().equals(event.getEntity().getStringUUID()))
+                .findFirst()
+                .ifPresent(ap -> {
+                    if (ap.getReal_name() != null) {
+                        event.setDisplayName(Component.literal(ap.getReal_name()));
+                    }
+                });
+    }
+
 }
 
 
