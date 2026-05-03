@@ -11,12 +11,14 @@ import com.ssis.ssisauth.secrets.secrets;
 import org.slf4j.Logger;
 import net.minecraft.world.entity.player.Player;
 
+// a
+
 public class post {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private static String EXTERNAL_SERVER_URL = "temp";
-    private static String API_KEY = secrets.ApiKey;
+    private static final String EXTERNAL_SERVER_URL = "temp";
+    private static final String API_KEY = secrets.ApiKey;
 
     public static void postAuthCode(Player player, String code){
         try {

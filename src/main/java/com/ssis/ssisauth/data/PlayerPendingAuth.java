@@ -6,8 +6,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import net.minecraft.world.entity.player.Player;
-import com.ssis.ssisauth.data.AuthedPlayer;
-import net.minecraft.server.MinecraftServer;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -15,7 +13,6 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerPendingAuth {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -64,9 +61,12 @@ public class PlayerPendingAuth {
         save();
     }
 
+    /*
     public static boolean contains(AuthedPlayer entry) {
         return entries.contains(entry);
     }
+
+     */
 
     public static AuthedPlayer fetchByUUID(String UUID){
         return getAll().stream()

@@ -57,14 +57,20 @@ public class AuthedPlayerList {
         save();
     }
 
+    /*
     public static void remove(AuthedPlayer entry) {
         entries.remove(entry);
         save();
     }
 
+     */
+
+    /*
     public static boolean contains(AuthedPlayer entry) {
         return entries.contains(entry);
     }
+
+     */
 
     public static boolean playerAuthed(Player player) {
         return entries.stream().anyMatch(ap -> ap.getUuid().equals(player.getStringUUID()));
