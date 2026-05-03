@@ -6,7 +6,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import net.minecraft.world.entity.player.Player;
-import com.ssis.ssisauth.data.AuthedPlayer;
 
 import java.io.*;
 import java.lang.reflect.Type;
