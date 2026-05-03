@@ -1,11 +1,21 @@
 package com.ssis.ssisauth.data;
 import net.minecraft.world.entity.player.Player;
+import com.google.gson.annotations.SerializedName;
 
 public class AuthedPlayer {
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("real_name")
     private String real_name;
+
+    @SerializedName("user_class")
     private String user_class;
+
+    @SerializedName("code")
     private String code;
 
     public AuthedPlayer(Player player, String real_name, String user_class, String code){
@@ -34,7 +44,7 @@ public class AuthedPlayer {
         return user_class;
     }
 
-    public Void setUser_class(String User_class){this.real_name = User_class; return null;}
+    public Void setUser_class(String User_class){this.user_class = User_class; return null;}
 
     public String getCode() {return code;}
 }
