@@ -24,7 +24,7 @@ public class post {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(EXTERNAL_SERVER_URL))
-                    .header("Content-Type", "application/jsoon")
+                    .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + API_KEY)
                     .POST(HttpRequest.BodyPublishers.ofString(payload))
                     .timeout(Duration.ofMillis(1000))

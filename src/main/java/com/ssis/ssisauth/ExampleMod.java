@@ -4,6 +4,9 @@ import com.ssis.ssisauth.data.AuthedPlayer;
 import com.ssis.ssisauth.data.PlayerPendingAuth;
 import com.ssis.ssisauth.net.Api;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.Team;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -111,14 +114,34 @@ public class ExampleMod {
 
             player.refreshTabListName();
 
-            } else if (PlayerPendingAuth.playerPending(player))  {
-            AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
-            player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
+
+            AuthedPlayerList.getAll().stream()
+                    .filter(ap -> ap.getUuid().equals(player.getStringUUID()))
+                    .findFirst()
+                    .ifPresent(ap -> {
+                        if (ap.getReal_name() != null) {
+                            Scoreboard scoreboard = player.getServer().getScoreboard();
+                            String teamName = "auth_" + player.getStringUUID().substring(0, 8);
+
+                            PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                            if (team == null) {
+                                team = scoreboard.addPlayerTeam(teamName);
+                            }
+
+                            team.setPlayerPrefix(Component.literal(ap.getReal_name() + " [" + ap.getUser_class() + "] "));
+                            team.setNameTagVisibility(Team.Visibility.ALWAYS);
+                            scoreboard.addPlayerToTeam(player.getScoreboardName(), team);
+                        }
+                    });
+
+        } else if (PlayerPendingAuth.playerPending(player))  {
+        AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
+        player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
 
         } else {
             String code = deps.generateCode();
 
-            //post.postAuthCode(player, code);
+            post.postAuthCode(player, code);
             LOGGER.info("Generated auth code for {}: {}", player.getStringUUID(), code); // add this
 
             player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + code));
@@ -163,18 +186,6 @@ public class ExampleMod {
         Api.stop();
     }
 
-    // Chat + nametag above head
-    @SubscribeEvent
-    public void onGetName(PlayerEvent.NameFormat event) {
-        AuthedPlayerList.getAll().stream()
-                .filter(ap -> ap.getUuid().equals(event.getEntity().getStringUUID()))
-                .findFirst()
-                .ifPresent(ap -> {
-                    if (ap.getReal_name() != null) {
-                        event.setDisplayname(Component.literal(ap.getReal_name() + " [" + ap.getUser_class() + "]"));
-                    }
-                });
-    }
 
     // Tab list
     @SubscribeEvent
