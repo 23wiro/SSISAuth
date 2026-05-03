@@ -2,6 +2,7 @@ package com.ssis.ssisauth;
 
 import com.ssis.ssisauth.data.AuthedPlayer;
 import com.ssis.ssisauth.data.PlayerPendingAuth;
+import com.ssis.ssisauth.net.Api;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 
@@ -90,7 +91,8 @@ public class ExampleMod {
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
-        NeoForge.EVENT_BUS.register(this);
+        // In your constructor
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         // Register the item to a creative tab
         //modEventBus.addListener(this::addCreative);
@@ -114,7 +116,7 @@ public class ExampleMod {
         } else {
             String code = deps.generateCode();
 
-            post.postAuthCode(player, code);
+            //post.postAuthCode(player, code);
             LOGGER.info("Generated auth code for {}: {}", player.getStringUUID(), code); // add this
 
             player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + code));
@@ -148,11 +150,15 @@ public class ExampleMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         AuthedPlayerList.load(event.getServer());
+        PlayerPendingAuth.load(event.getServer());
+        Api.start();
     }
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event){
         AuthedPlayerList.save();
+        PlayerPendingAuth.save();
+        Api.stop();
     }
 
     // Chat + nametag above head
@@ -163,7 +169,7 @@ public class ExampleMod {
                 .findFirst()
                 .ifPresent(ap -> {
                     if (ap.getReal_name() != null) {
-                        event.setDisplayname(Component.literal(ap.getReal_name()));
+                        event.setDisplayname(Component.literal(ap.getReal_name() + " [" + ap.getUser_class() + "]"));
                     }
                 });
     }
@@ -176,9 +182,13 @@ public class ExampleMod {
                 .findFirst()
                 .ifPresent(ap -> {
                     if (ap.getReal_name() != null) {
-                        event.setDisplayName(Component.literal(ap.getReal_name()));
+                        event.setDisplayName(Component.literal(ap.getReal_name() + " [" + ap.getUser_class() + "]"));
                     }
                 });
+    }
+
+    private void onRegisterCommands(net.neoforged.neoforge.event.RegisterCommandsEvent event) {
+        com.ssis.ssisauth.commands.aban.register(event.getDispatcher());
     }
 
 }

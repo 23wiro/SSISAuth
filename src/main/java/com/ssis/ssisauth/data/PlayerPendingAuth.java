@@ -20,14 +20,14 @@ import java.util.UUID;
 public class PlayerPendingAuth {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
-    private static final Type LIST_TYPE = new TypeToken<List<String>>(){}.getType();
+    private static final Type LIST_TYPE = new TypeToken<List<AuthedPlayer>>(){}.getType();
 
     private static List<AuthedPlayer> entries = new ArrayList<>();
     private static Path savePath;
 
     public static void load(MinecraftServer server) {
         savePath = server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT)
-                .resolve("data/ssisauth/PlayerPendeingAuth.json");
+                .resolve("data/ssisauth/PlayerPendingAuth.json");
 
         if (!Files.exists(savePath)) {
             entries = new ArrayList<>();

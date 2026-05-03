@@ -18,7 +18,7 @@ import java.util.List;
 public class AuthedPlayerList {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
-    private static final Type LIST_TYPE = new TypeToken<List<String>>(){}.getType();
+    private static final Type LIST_TYPE = new TypeToken<List<AuthedPlayer>>(){}.getType();
 
     private static List<AuthedPlayer> entries = new ArrayList<>();
     private static Path savePath;

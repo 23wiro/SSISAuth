@@ -1,4 +1,5 @@
 package com.ssis.ssisauth.net;
+import com.ssis.ssisauth.secrets.secrets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class Api {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
-    private static final String API_KEY = "your-secret-key";
+    private static final String API_KEY = secrets.ApiKey;
     private static HttpServer server;
 
     public static void start() {
