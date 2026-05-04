@@ -125,7 +125,7 @@ public class ExampleMod {
     }
 
     @SubscribeEvent
-    public void onServerStopping(){
+    public void onServerStopping(ServerStoppingEvent event){
         AuthedPlayerList.save();
         PlayerPendingAuth.save();
         Api.stop();

@@ -18,7 +18,7 @@ public class post {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private static final String EXTERNAL_SERVER_URL = "temp";
-    private static final String API_KEY = secrets.ApiKey;
+    private static final String API_KEY = secrets.PostKey;
 
     public static void postAuthCode(Player player, String code){
         try {
