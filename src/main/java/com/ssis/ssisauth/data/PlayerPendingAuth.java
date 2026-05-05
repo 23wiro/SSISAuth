@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.*;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,5 +89,27 @@ public class PlayerPendingAuth {
 
     public static List<AuthedPlayer> getAll() {
         return Collections.unmodifiableList(entries);
+    }
+
+    public static String generate6DigitCode() {
+        String code;
+        do {
+            code = generateRandomCode();
+        } while (isCodeTaken(code));
+        return code;
+    }
+
+    private static String generateRandomCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder code = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            code.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return code.toString();
+    }
+
+    private static boolean isCodeTaken(String code) {
+        return entries.stream().anyMatch(ap -> ap.getCode().equals(code));
     }
 }
