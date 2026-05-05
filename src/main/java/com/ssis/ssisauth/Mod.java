@@ -84,18 +84,20 @@ public class Mod {
                     });
 
         } else if (PlayerPendingAuth.playerPending(player))  {
-        AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
-        player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
+            AuthedPlayer pendingPlayer = PlayerPendingAuth.fetchByUUID(player.getStringUUID());
+            // Delay disconnect by 1 tick
+            player.getServer().execute(() -> {
+                player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
+            });
 
         } else {
             String code = PlayerPendingAuth.generate6DigitCode();
-
             LOGGER.info("Generated auth code for {}: {}", player.getStringUUID(), code);
-
-
-
-            player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + code));
             PlayerPendingAuth.add(new AuthedPlayer(player, null, null, code));
+            // Delay disconnect by 1 tick
+            player.getServer().execute(() -> {
+                player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + code));
+            });
         }
 
     }
