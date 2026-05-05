@@ -2,13 +2,13 @@ package com.ssis.ssisauth;
 
 import com.ssis.ssisauth.data.AuthedPlayer;
 import com.ssis.ssisauth.data.PlayerPendingAuth;
-import com.ssis.ssisauth.deps.UUIDEncoder;
 import com.ssis.ssisauth.net.Api;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
 import org.slf4j.Logger;
+import com.ssis.ssisauth.deps.deps;
 
 import com.mojang.logging.LogUtils;
 
@@ -89,7 +89,7 @@ public class Mod {
         player.connection.disconnect(Component.literal("Du måste logga in med din skolmejl på mc.ssis.nu. Skriv in denna kod: " + pendingPlayer.getCode()));
 
         } else {
-            String code = UUIDEncoder.encode(player.getStringUUID());
+            String code = deps.generate6DigitCode();
 
             LOGGER.info("Generated auth code for {}: {}", player.getStringUUID(), code);
 

@@ -68,6 +68,13 @@ public class PlayerPendingAuth {
 
      */
 
+    public static AuthedPlayer fetchByCode(String code) {
+        return getAll().stream()
+                .filter(ap -> ap.getCode().equals(code))
+                .findFirst()
+                .orElse(null);
+    }
+
     public static AuthedPlayer fetchByUUID(String UUID){
         return getAll().stream()
                 .filter(ap -> ap.getUuid().equals(UUID))

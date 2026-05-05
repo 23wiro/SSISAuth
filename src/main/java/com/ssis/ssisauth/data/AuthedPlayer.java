@@ -47,4 +47,5 @@ public class AuthedPlayer {
     public Void setUser_class(String User_class){this.user_class = User_class; return null;}
 
     public String getCode() {return code;}
+
 }

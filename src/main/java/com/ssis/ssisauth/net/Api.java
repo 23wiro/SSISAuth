@@ -27,7 +27,7 @@ public class Api {
         try {
             server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/api/player", Api::handlePlayer);
-            server.createContext("/api/auth", Api::handleAuth); // new
+            server.createContext("/api/auth", Api::handleAuth);
             server.setExecutor(java.util.concurrent.Executors.newFixedThreadPool(4));
             server.start();
             LOGGER.info("Auth API server started on port 8080");
@@ -65,17 +65,17 @@ public class Api {
         }
     }
 
-    // GET /api/player?uuid=xxxx
+    // GET /api/player?code=XXXXXX
     private static void handleGetPlayer(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
-        if (query == null || !query.startsWith("uuid=")) {
-            sendResponse(exchange, 400, "{\"error\":\"Missing uuid parameter\"}");
+        if (query == null || !query.startsWith("code=")) {
+            sendResponse(exchange, 400, "{\"error\":\"Missing code parameter\"}");
             return;
         }
 
-        String uuid = query.substring(5);
+        String code = query.substring(5);
         Optional<AuthedPlayer> player = AuthedPlayerList.getAll().stream()
-                .filter(ap -> ap.getUuid().equals(uuid))
+                .filter(ap -> ap.getCode().equals(code))
                 .findFirst();
 
         if (player.isEmpty()) {
@@ -87,7 +87,7 @@ public class Api {
     }
 
     // POST /api/player
-    // Body: { "uuid": "...", "real_name": "...", "user_class": "..." }
+    // Body: { "code": "...", "real_name": "...", "user_class": "..." }
     private static void handleUpdatePlayer(HttpExchange exchange) throws IOException {
         String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
 
@@ -99,14 +99,14 @@ public class Api {
             return;
         }
 
-        if (!json.has("uuid")) {
-            sendResponse(exchange, 400, "{\"error\":\"Missing uuid\"}");
+        if (!json.has("code")) {
+            sendResponse(exchange, 400, "{\"error\":\"Missing code\"}");
             return;
         }
 
-        String uuid = json.get("uuid").getAsString();
+        String code = json.get("code").getAsString();
         Optional<AuthedPlayer> playerOpt = AuthedPlayerList.getAll().stream()
-                .filter(ap -> ap.getUuid().equals(uuid))
+                .filter(ap -> ap.getCode().equals(code))
                 .findFirst();
 
         if (playerOpt.isEmpty()) {
@@ -123,7 +123,7 @@ public class Api {
     }
 
     // POST /api/auth
-    // Body: { "uuid": "...", "real_name": "...", "user_class": "..." }
+    // Body: { "code": "...", "real_name": "...", "user_class": "..." }
     private static void handleAuth(HttpExchange exchange) throws IOException {
         if (!checkAuth(exchange)) return;
 
@@ -142,18 +142,19 @@ public class Api {
             return;
         }
 
-        if (!json.has("uuid") || !json.has("real_name") || !json.has("user_class")) {
-            sendResponse(exchange, 400, "{\"error\":\"Missing required fields: uuid, real_name, user_class\"}");
+        if (!json.has("code") || !json.has("real_name") || !json.has("user_class")) {
+            sendResponse(exchange, 400, "{\"error\":\"Missing required fields: code, real_name, user_class\"}");
             return;
         }
 
-        String uuid = json.get("uuid").getAsString();
+        String code = json.get("code").getAsString();
         String realName = json.get("real_name").getAsString();
         String userClass = json.get("user_class").getAsString();
 
-        AuthedPlayer pending = PlayerPendingAuth.fetchByUUID(uuid);
+        // Look up pending player by code instead of UUID
+        AuthedPlayer pending = PlayerPendingAuth.fetchByCode(code);
         if (pending == null) {
-            sendResponse(exchange, 404, "{\"error\":\"No pending auth for this UUID\"}");
+            sendResponse(exchange, 404, "{\"error\":\"No pending auth for this code\"}");
             return;
         }
 
