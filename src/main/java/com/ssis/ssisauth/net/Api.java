@@ -30,7 +30,7 @@ public class Api {
             server.createContext("/api/auth", Api::handleAuth);
             server.setExecutor(java.util.concurrent.Executors.newFixedThreadPool(4));
             server.start();
-            LOGGER.info("Auth API server started on port 8080");
+            LOGGER.info("Auth API server started on port 8081");
         } catch (IOException e) {
             LOGGER.error("Failed to start API server", e);
         }
