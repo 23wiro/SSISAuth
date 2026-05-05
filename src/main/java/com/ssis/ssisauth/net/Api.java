@@ -25,12 +25,12 @@ public class Api {
 
     public static void start() {
         try {
-            server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server = HttpServer.create(new InetSocketAddress(8081), 0);
             server.createContext("/api/player", Api::handlePlayer);
             server.createContext("/api/auth", Api::handleAuth);
             server.setExecutor(java.util.concurrent.Executors.newFixedThreadPool(4));
             server.start();
-            LOGGER.info("Auth API server started on port 8080");
+            LOGGER.info("Auth API server started on port 8081");
         } catch (IOException e) {
             LOGGER.error("Failed to start API server", e);
         }
