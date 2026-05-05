@@ -25,7 +25,7 @@ public class Api {
 
     public static void start() {
         try {
-            server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server = HttpServer.create(new InetSocketAddress(8081), 0);
             server.createContext("/api/player", Api::handlePlayer);
             server.createContext("/api/auth", Api::handleAuth);
             server.setExecutor(java.util.concurrent.Executors.newFixedThreadPool(4));
