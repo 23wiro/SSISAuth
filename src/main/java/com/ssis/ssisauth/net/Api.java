@@ -154,7 +154,7 @@ public class Api {
         // Look up pending player by code instead of UUID
         AuthedPlayer pending = PlayerPendingAuth.fetchByCode(code);
         if (pending == null) {
-            sendResponse(exchange, 404, "{\"error\":\"No pending auth for this code\"}");
+            sendResponse(exchange, 401, "{\"error\":\"No pending auth for this code\"}");
             return;
         }
 
