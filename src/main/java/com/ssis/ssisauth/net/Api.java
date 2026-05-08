@@ -110,7 +110,7 @@ public class Api {
                 .findFirst();
 
         if (playerOpt.isEmpty()) {
-            sendResponse(exchange, 404, "{\"error\":\"Player not found\"}");
+            sendResponse(exchange, 401, "{\"error\":\"Player not found\"}");
             return;
         }
 
